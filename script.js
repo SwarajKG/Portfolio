@@ -91,119 +91,174 @@ document.addEventListener("DOMContentLoaded", () => {
     /* ==========================================================================
        GSAP Animations
        ========================================================================== */
-    gsap.registerPlugin(ScrollTrigger);
+    if (typeof gsap !== 'undefined' && typeof ScrollTrigger !== 'undefined') {
+        gsap.registerPlugin(ScrollTrigger);
 
-    // Hero Section Animations
-    const tlHero = gsap.timeline();
-    tlHero.from(".greeting", { y: 20, opacity: 0, duration: 0.8, delay: 0.5 })
-          .from(".name", { y: 20, opacity: 0, duration: 0.8 }, "-=0.6")
-          .from(".title", { y: 20, opacity: 0, duration: 0.8 }, "-=0.6")
-          .from(".tagline", { y: 20, opacity: 0, duration: 0.8 }, "-=0.6")
-          .from(".hero-buttons", { y: 20, opacity: 0, duration: 0.8 }, "-=0.6")
-          .from(".scroll-indicator", { opacity: 0, duration: 1 }, "-=0.4");
+        // Hero Section Animations
+        if (document.querySelector('.hero-content')) {
+            const tlHero = gsap.timeline();
+            tlHero.fromTo(".greeting", { y: 20, autoAlpha: 0 }, { y: 0, autoAlpha: 1, duration: 0.8, delay: 0.5 })
+                  .fromTo(".name", { y: 20, autoAlpha: 0 }, { y: 0, autoAlpha: 1, duration: 0.8 }, "-=0.6")
+                  .fromTo(".title", { y: 20, autoAlpha: 0 }, { y: 0, autoAlpha: 1, duration: 0.8 }, "-=0.6")
+                  .fromTo(".tagline", { y: 20, autoAlpha: 0 }, { y: 0, autoAlpha: 1, duration: 0.8 }, "-=0.6")
+                  .fromTo(".hero-buttons", { y: 20, autoAlpha: 0 }, { y: 0, autoAlpha: 1, duration: 0.8 }, "-=0.6")
+                  .fromTo(".scroll-indicator", { autoAlpha: 0 }, { autoAlpha: 1, duration: 1 }, "-=0.4");
+        }
 
-    // General Section Fade Up
-    const sections = document.querySelectorAll('.section:not(#hero)');
-    sections.forEach(section => {
-        gsap.from(section.querySelector('.section-title'), {
-            scrollTrigger: {
-                trigger: section,
-                start: "top 80%",
-            },
-            y: 30,
-            opacity: 0,
-            duration: 0.8
-        });
-    });
-
-    // About Section
-    gsap.from(".about-content", {
-        scrollTrigger: {
-            trigger: "#about",
-            start: "top 75%",
-        },
-        y: 40,
-        opacity: 0,
-        duration: 1
-    });
-
-    // Skills Section - Progress Bars Animation
-    const skillCategories = document.querySelectorAll('.skill-category');
-    skillCategories.forEach(category => {
-        gsap.from(category, {
-            scrollTrigger: {
-                trigger: category,
-                start: "top 85%",
-            },
-            y: 30,
-            opacity: 0,
-            duration: 0.6,
-            stagger: 0.2
+        // General Section Title Fade Up
+        const sections = document.querySelectorAll('.section:not(#hero)');
+        sections.forEach(section => {
+            const title = section.querySelector('.section-title');
+            if (title) {
+                gsap.fromTo(title, 
+                    { y: 30, autoAlpha: 0 },
+                    {
+                        scrollTrigger: {
+                            trigger: section,
+                            start: "top 95%",
+                            once: true
+                        },
+                        y: 0,
+                        autoAlpha: 1,
+                        duration: 0.8
+                    }
+                );
+            }
         });
 
-        // Animate progress bars within the category
-        const progressBars = category.querySelectorAll('.progress');
-        progressBars.forEach(bar => {
-            gsap.to(bar, {
-                scrollTrigger: {
-                    trigger: category,
-                    start: "top 85%",
-                },
-                width: bar.getAttribute('data-width'),
-                duration: 1.5,
-                ease: "power2.out",
-                delay: 0.3
+        // About Section
+        if (document.querySelector('.about-content')) {
+            gsap.fromTo(".about-content", 
+                { y: 40, autoAlpha: 0 },
+                {
+                    scrollTrigger: {
+                        trigger: "#about",
+                        start: "top 90%",
+                        once: true
+                    },
+                    y: 0,
+                    autoAlpha: 1,
+                    duration: 1
+                }
+            );
+        }
+
+        // Skills Section - Progress Bars Animation
+        const skillCategories = document.querySelectorAll('.skill-category');
+        if (skillCategories.length > 0) {
+            skillCategories.forEach(category => {
+                gsap.fromTo(category, 
+                    { y: 30, autoAlpha: 0 },
+                    {
+                        scrollTrigger: {
+                            trigger: category,
+                            start: "top 95%",
+                            once: true
+                        },
+                        y: 0,
+                        autoAlpha: 1,
+                        duration: 0.6
+                    }
+                );
+
+                // Animate progress bars within the category
+                const progressBars = category.querySelectorAll('.progress');
+                progressBars.forEach(bar => {
+                    gsap.to(bar, {
+                        scrollTrigger: {
+                            trigger: category,
+                            start: "top 95%",
+                            once: true
+                        },
+                        width: bar.getAttribute('data-width'),
+                        duration: 1.5,
+                        ease: "power2.out",
+                        delay: 0.3
+                    });
+                });
             });
+        }
+
+        // Experience Timeline
+        const timelineItems = document.querySelectorAll('.timeline-item');
+        if (timelineItems.length > 0) {
+            timelineItems.forEach(item => {
+                gsap.fromTo(item, 
+                    { x: -50, autoAlpha: 0 },
+                    {
+                        scrollTrigger: {
+                            trigger: item,
+                            start: "top 95%",
+                            once: true
+                        },
+                        x: 0,
+                        autoAlpha: 1,
+                        duration: 0.8,
+                        ease: "back.out(1.7)"
+                    }
+                );
+            });
+        }
+
+        // Education Cards
+        const eduCards = document.querySelectorAll('.edu-card');
+        if (eduCards.length > 0) {
+            gsap.fromTo(eduCards, 
+                { y: 50, autoAlpha: 0 },
+                {
+                    scrollTrigger: {
+                        trigger: "#education",
+                        start: "top 90%",
+                        once: true
+                    },
+                    y: 0,
+                    autoAlpha: 1,
+                    duration: 0.8,
+                    stagger: 0.2
+                }
+            );
+        }
+
+        // Contact Section
+        if (document.querySelector('.contact-info')) {
+            gsap.fromTo(".contact-info", 
+                { x: -30, autoAlpha: 0 },
+                {
+                    scrollTrigger: {
+                        trigger: "#contact",
+                        start: "top 90%",
+                        once: true
+                    },
+                    x: 0,
+                    autoAlpha: 1,
+                    duration: 0.8
+                }
+            );
+        }
+
+        if (document.querySelector('.contact-form')) {
+            gsap.fromTo(".contact-form", 
+                { x: 30, autoAlpha: 0 },
+                {
+                    scrollTrigger: {
+                        trigger: "#contact",
+                        start: "top 90%",
+                        once: true
+                    },
+                    x: 0,
+                    autoAlpha: 1,
+                    duration: 0.8
+                }
+            );
+        }
+
+        // Thorough refresh after everything settles
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                ScrollTrigger.refresh();
+            }, 500);
         });
-    });
-
-    // Experience Timeline
-    const timelineItems = document.querySelectorAll('.timeline-item');
-    timelineItems.forEach((item, index) => {
-        gsap.from(item, {
-            scrollTrigger: {
-                trigger: item,
-                start: "top 85%",
-            },
-            x: -50,
-            opacity: 0,
-            duration: 0.8,
-            ease: "back.out(1.7)"
-        });
-    });
-
-    // Education Cards
-    gsap.from(".edu-card", {
-        scrollTrigger: {
-            trigger: "#education",
-            start: "top 80%",
-        },
-        y: 50,
-        opacity: 0,
-        duration: 0.8,
-        stagger: 0.2
-    });
-
-    // Contact Section
-    gsap.from(".contact-info", {
-        scrollTrigger: {
-            trigger: "#contact",
-            start: "top 80%",
-        },
-        x: -30,
-        opacity: 0,
-        duration: 0.8
-    });
-
-    gsap.from(".contact-form", {
-        scrollTrigger: {
-            trigger: "#contact",
-            start: "top 80%",
-        },
-        x: 30,
-        opacity: 0,
-        duration: 0.8
-    });
+    }
 
     /* ==========================================================================
        Three.js Background Animation (Particles)
