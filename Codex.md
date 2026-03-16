@@ -5,49 +5,43 @@ This document provides a detailed technical breakdown of the implementation logi
 ## 🏛️ Architectural Design
 The project utilizes a **Flat File Architecture** to minimize deployment complexity and ensure high-speed asset resolution. All core logic is consolidated into three primary files:
 - `index.html`: Semantic structure and CDN management.
-- `styles.css`: Theming, Glassmorphism UI, and responsive layout.
-- `script.js`: 3D rendering, animation orchestration, and DOM interactions.
+- `styles.css`: Theming, Glassmorphism UI, game layouts, and responsive design.
+- `script.js`: 3D rendering, animation orchestration, DOM interactions, and four distinct game engines.
 
 ---
 
-## 🌌 3D Hero Background (Three.js)
-The background is rendered on a dedicated `<canvas>` using **Three.js**.
-- **Geometry**: `THREE.BufferGeometry` is used for performance, as it manages large arrays of point data more efficiently than standard geometry.
-- **Material**: `THREE.PointsMaterial` with `THREE.AdditiveBlending` creates a "glow" effect where particles overlap.
-- **Logic**:
-  - The particle system rotates slowly on its X and Y axes (`clock.getElapsedTime()`).
-  - **Interaction**: Mouse coordinates are tracked and mapped to a subtle rotation multiplier, creating a parallax effect that follows the user.
-  - **Optimization**: Particle count is dynamically adjusted based on viewport width to preserve battery life on mobile devices.
+## 🌌 Interactive Neural Network Background (Three.js)
+Replacing a simple particle system, the background now features a "Neural Network" node-and-link system.
+- **Node Geometry**: `THREE.BufferGeometry` with `THREE.Points` is used for high-performance rendering of nodes.
+- **Dynamic Links**: `THREE.LineSegments` are used to draw connections between nodes that fall within a 15-unit radius. This distance check is calculated in every frame, creating a dynamic, flowing mesh.
+- **Physics & Motion**: Nodes have constant velocities but bounce off invisible boundaries (-60 to 60) to stay within the scene's view.
+- **Parallax Logic**: Mouse coordinates are mapped to the scene's rotation. Additionally, a `scrollPercent` variable links the page's vertical position to the scene's rotation, creating a deep 3D sense of movement during navigation.
+
+---
+
+## 🕹️ Developer Mini-Games (2D Canvas & DOM)
+The portfolio includes four mini-games, each tailored to a specific section of the career history:
+1. **Code Invaders (About Section)**: A Space Invaders clone where the player (`[ ]`) shoots green patches to clear "BUG" and "ERROR" waves.
+2. **Snake.js (Skills Section)**: A classic Snake clone where the player eats tech keywords (C#, .NET, JS) to grow their "career length."
+3. **Whack-a-Bug (Experience Section)**: A time-limited challenge (30s) where the player clicks randomly appearing bugs on a 3x3 server grid. Uses GSAP for "FIXED!" popup animations.
+4. **Bug Runner (Education Section)**: An endless runner where the player (`</>`) jumps over red "ERROR" text blocks. Features gravity physics and increasing speed.
+
+All games use a shared `game-overlay` class for consistent start/restart UI and `localStorage` to persist high scores between sessions.
 
 ---
 
 ## 🎭 Animation Engine (GSAP & ScrollTrigger)
 The animation system is built for **reliability** and **guaranteed visibility**.
-- **Visibility Pattern**: We use the `fromTo` pattern instead of `from`. This explicitly defines the starting state (hidden, offset) and the ending state (visible, centered), preventing elements from getting stuck in an invisible state if a scroll trigger is interrupted.
-- **Visibility Property**: `autoAlpha` is used instead of `opacity`. `autoAlpha` toggles `visibility: hidden` when the opacity is 0, improving performance by removing the element from the browser's render tree until needed.
-- **Synchronization**: `ScrollTrigger.refresh()` is called with a 500ms delay after the `window.load` event. This ensures that the height of the page (and thus the trigger points) is accurately measured after the Google Form iframe and Three.js canvas have finished their layout calculations.
+- **Visibility Pattern**: We use the `fromTo` pattern instead of `from`. This explicitly defines the starting state (hidden, offset) and the ending state (visible, centered), preventing elements from getting stuck in an invisible state.
+- **Performance**: GSAP animations prioritize hardware-accelerated properties (`transform` and `opacity/autoAlpha`) to ensure 60FPS performance.
+- **Synchronization**: `ScrollTrigger.refresh()` is called after page load to ensure trigger points are accurately calculated after the 3D canvas and iframes have finished their initial layout.
 
 ---
 
-## 💎 UI & Styling (Glassmorphism)
-The design follows a **Dark Modern Developer** aesthetic.
-- **Glassmorphism**: Achieved using `backdrop-filter: blur()`. It provides a translucent "frosted glass" effect that allows the 3D particles to be subtly visible behind the content panels.
-- **Variables**: The entire theme is centralized in CSS `:root` variables, allowing for global color or typography changes with a single edit.
-- **Timeline UI**: Built using CSS pseudo-elements (`::before` and `::after`) to create the vertical line and connection dots without extra HTML bloat.
+## 📱 Responsive & Interactive Enhancements
+- **Custom Cursor**: A two-part follower (dot and outline). The outline uses `gsap.animate` with a slight duration for a smooth, elastic effect. It is automatically disabled on touch devices.
+- **3D Tilt Effects**: Powered by **Vanilla Tilt**, giving physical depth to experience cards when hovered.
+- **Favicon & PDF Branding**: The site includes a custom `fav.ico` and a direct-download `resume.pdf` link, ensuring a professional, fully-branded experience.
 
 ---
-
-## 📩 Contact Integration (Google Form Hack)
-To maintain the dark theme while using a standard Google Form:
-- **CSS Filter**: An `invert(90%) hue-rotate(180deg)` filter is applied to the iframe. This mathematically flips the white background of the Google Form to a dark grey and preserves the relative colors of the inputs and text.
-- **Iframe Embedding**: The form is embedded with `embedded=true` to strip standard Google headers and footers, resulting in a cleaner integration.
-
----
-
-## 📱 Mobile Strategy
-- **Cursor Logic**: The custom cursor is automatically disabled on devices where `(pointer: fine)` is false (touchscreens) to avoid erratic behavior.
-- **Layout**: Flexbox and CSS Grid are used with `repeat(auto-fit)` to ensure that skill cards and project sections stack naturally without hardcoded breakpoints where possible.
-- **Performance**: GSAP animations use hardware-accelerated properties (`transform` and `opacity`) to ensure 60FPS performance even on mid-range mobile devices.
-
----
-**Maintenance Note**: When adding new sections, always wrap them in a `.section` container to ensure they are automatically picked up by the global GSAP reveal logic in `script.js`.
+**Maintenance Note**: All project logic is modular within `script.js`. New games or features should follow the `DOMContentLoaded` wrapper pattern and use existing CSS variables for theme consistency.
