@@ -483,10 +483,12 @@ ul {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
     gap: 2rem;
+    opacity: 0.95;
 }
 
 .skill-category {
     padding: 2rem;
+    opacity: 0.9;
 }
 
 .skill-category h3 {
@@ -819,6 +821,19 @@ ul {
     font-size: 1.8rem;
     margin-bottom: 2rem;
     color: var(--text-primary);
+}
+
+.google-form-container {
+    width: 100%;
+    overflow: hidden;
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.02);
+}
+
+.google-form-container iframe {
+    border: none;
+    filter: invert(90%) hue-rotate(180deg) brightness(1.2); /* Attempt to make Google Form look dark */
+    opacity: 0.9;
 }
 
 .input-group {
