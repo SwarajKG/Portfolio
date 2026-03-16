@@ -1094,3 +1094,34 @@ document.addEventListener("DOMContentLoaded", () => {
             startBtn.addEventListener('click', startGame);
         }
         });
+
+        /* ==========================================================================
+           Contact Form Submission to Google Forms
+           ========================================================================== */
+        const contactForm = document.getElementById('contactForm');
+        if (contactForm) {
+            contactForm.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                
+                const formData = new FormData(contactForm);
+                const data = {};
+                for (let [key, value] of formData.entries()) {
+                    data[key] = value;
+                }
+                
+                try {
+                    const response = await fetch('https://docs.google.com/forms/d/e/1FAIpQLSefBfJAeCpqiYBQvxqtcWf4rMNviSaHVfDcsRrjm3GIDTVNiQ/formResponse', {
+                        method: 'POST',
+                        mode: 'no-cors',
+                        body: new URLSearchParams(data)
+                    });
+                    
+                    // Since no-cors, we can't check response status, but assume success
+                    alert('Thank you for your message!');
+                    contactForm.reset();
+                } catch (error) {
+                    console.error('Error submitting form:', error);
+                    alert('There was an error sending your message. Please try again.');
+                }
+            });
+        }
