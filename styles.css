@@ -326,12 +326,13 @@ ul {
 }
 
 #three-canvas {
-    position: absolute;
+    position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    z-index: 1;
+    z-index: -1;
+    pointer-events: none;
 }
 
 .hero-content {
@@ -684,6 +685,74 @@ ul {
 }
 
 /* ==========================================================================
+   Whack-a-Bug Section
+   ========================================================================== */
+.whack-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: repeat(3, 1fr);
+    gap: 15px;
+    width: 100%;
+    height: 100%;
+    padding: 20px;
+    background: rgba(0, 0, 0, 0.4);
+}
+
+.whack-hole {
+    background: rgba(30, 41, 59, 0.6);
+    border: 2px solid var(--glass-border);
+    border-radius: 12px;
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.whack-hole:hover {
+    background: rgba(59, 130, 246, 0.1);
+}
+
+.whack-hole .bug {
+    position: absolute;
+    bottom: -100%;
+    width: 80%;
+    height: 60%;
+    background: #ef4444;
+    color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-family: var(--font-mono);
+    font-weight: bold;
+    font-size: 1.2rem;
+    border-radius: 8px;
+    transition: bottom 0.2s ease-out;
+    pointer-events: none;
+    box-shadow: 0 0 15px rgba(239, 68, 68, 0.5);
+}
+
+.whack-hole.active .bug {
+    bottom: 20%;
+}
+
+@media screen and (max-width: 480px) {
+    .whack-hole .bug { font-size: 0.9rem; }
+}
+
+/* ==========================================================================
+   Snake.js Section
+   ========================================================================== */
+#snake-canvas {
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.4);
+    display: block;
+}
+
+/* ==========================================================================
    Education Section
    ========================================================================== */
 .education-grid {
@@ -725,6 +794,123 @@ ul {
     font-size: 1rem;
     color: var(--text-muted);
     font-weight: 400;
+}
+
+/* ==========================================================================
+   Mini Game Shared Styles
+   ========================================================================== */
+.game-subtitle {
+    font-size: 1.2rem;
+    color: var(--secondary-color);
+    font-weight: 400;
+    display: block;
+    margin-top: 0.5rem;
+}
+
+.game-container {
+    position: relative;
+    width: 100%;
+    max-width: 800px;
+    height: 400px;
+    margin: 0 auto;
+    overflow: hidden;
+    cursor: default;
+}
+
+.game-stats {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    right: 20px;
+    display: flex;
+    justify-content: space-between;
+    font-family: var(--font-mono);
+    color: var(--text-primary);
+    font-weight: 600;
+    font-size: 1.1rem;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+    pointer-events: none;
+    z-index: 5;
+}
+
+.game-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(15, 23, 42, 0.8);
+    backdrop-filter: blur(8px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    z-index: 10;
+    pointer-events: auto;
+    transition: var(--transition);
+}
+
+.game-overlay.hidden {
+    opacity: 0;
+    pointer-events: none;
+}
+
+.overlay-content h3 {
+    font-size: 2.5rem;
+    color: var(--primary-color);
+    margin-bottom: 1rem;
+}
+
+.overlay-content p {
+    color: var(--text-secondary);
+    margin-bottom: 2rem;
+}
+
+.game-hint {
+    position: absolute;
+    bottom: 15px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    opacity: 0.7;
+    pointer-events: none;
+}
+
+/* Specific Game UI Wrappers */
+#invaders-ui, #game-ui {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+}
+
+/* ==========================================================================
+   Bug Runner Section
+   ========================================================================== */
+#game-canvas {
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.3);
+    display: block;
+}
+
+/* ==========================================================================
+   Code Invaders Section
+   ========================================================================== */
+#invaders-canvas {
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.4);
+    display: block;
+}
+
+@media screen and (max-width: 768px) {
+    .game-container { height: 300px; }
+    .overlay-content h3 { font-size: 1.8rem; }
 }
 
 /* ==========================================================================

@@ -16,40 +16,46 @@
     
     <!-- Custom CSS -->
     <link rel="stylesheet" href="styles.css">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="fav.ico">
 </head>
 <body>
+
+    <!-- Three.js Global Background -->
+    <canvas id="three-canvas"></canvas>
 
     <!-- Custom Cursor -->
     <div class="cursor-dot"></div>
     <div class="cursor-outline"></div>
 
     <!-- Navigation -->
-    <nav class="navbar" id="navbar">
+    <nav class="navbar" id="navbar" aria-label="Main Navigation">
         <div class="nav-container">
-            <a href="#hero" class="logo">SKG</a>
-            <div class="menu-icon" id="menu-icon">
+            <a href="#hero" class="logo" aria-label="SKG Portfolio Home">SKG <i class="far fa-smile"></i></a>
+            <button class="menu-icon" id="menu-icon" aria-label="Toggle Menu" aria-expanded="false" aria-controls="nav-links">
                 <i class="fas fa-bars"></i>
-            </div>
+            </button>
             <ul class="nav-links" id="nav-links">
                 <li><a href="#about" class="nav-link">About</a></li>
                 <li><a href="#skills" class="nav-link">Skills</a></li>
                 <li><a href="#experience" class="nav-link">Experience</a></li>
                 <li><a href="#education" class="nav-link">Education</a></li>
-                <li><a href="#contact" class="nav-link btn-contact-nav">Contact</a></li>
+                <li><a href="#contact" class="nav-link">Contact</a></li>
+                <li><a href="resume.pdf" class="nav-link btn-contact-nav" target="_blank" download="Swaraj_Gupta_Resume.pdf">Resume</a></li>
             </ul>
         </div>
     </nav>
 
     <!-- Hero Section -->
     <section id="hero" class="hero-section">
-        <canvas id="three-canvas"></canvas>
         <div class="hero-content glass-panel">
             <p class="greeting">Hello World, I am</p>
             <h1 class="name">Swaraj Gupta</h1>
             <h2 class="title">Senior Full Stack .NET Developer</h2>
             <p class="tagline">6+ Years Experience Building Scalable Enterprise Applications</p>
             <div class="hero-buttons">
-                <a href="#contact" class="btn btn-primary">View Resume</a>
+                <a href="#about" class="btn btn-primary" download="Swaraj_Gupta_Resume.pdf">Know More</a>
                 <a href="#contact" class="btn btn-secondary">Contact Me</a>
             </div>
         </div>
@@ -87,6 +93,30 @@
                         <span class="stat-label">Enterprise Projects</span>
                     </div>
                 </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Code Invaders Mini Game Section -->
+    <section id="invaders-section" class="section">
+        <div class="container">
+            <h2 class="section-title">Code Invaders <span class="game-subtitle">(Shoot down the Bugs!)</span></h2>
+            <div class="game-container glass-panel">
+                <div id="invaders-ui">
+                    <div id="invaders-overlay" class="game-overlay">
+                        <div class="overlay-content">
+                            <h3 id="invaders-title">Firewall Protection</h3>
+                            <p id="invaders-text">Stop the Bugs from reaching your local server!</p>
+                            <button id="start-invaders-btn" class="btn btn-primary">Initialize Firewall</button>
+                        </div>
+                    </div>
+                    <div class="game-stats">
+                        <div class="score">Bugs Patched: <span id="invaders-score">0</span></div>
+                        <div class="high-score">Record: <span id="invaders-high-score">0</span></div>
+                    </div>
+                </div>
+                <canvas id="invaders-canvas"></canvas>
+                <div class="game-hint">Move: Arrow Keys or Drag | Fire: Space or Tap</div>
             </div>
         </div>
     </section>
@@ -171,6 +201,30 @@
         </div>
     </section>
 
+    <!-- Snake.js Mini Game Section -->
+    <section id="snake-section" class="section">
+        <div class="container">
+            <h2 class="section-title">Snake.js <span class="game-subtitle">(Eat Skills to Grow Your Career!)</span></h2>
+            <div class="game-container glass-panel">
+                <div id="snake-ui">
+                    <div id="snake-overlay" class="game-overlay">
+                        <div class="overlay-content">
+                            <h3 id="snake-title">Skill Up!</h3>
+                            <p id="snake-text">Collect tech skills to grow your career. Avoid the walls and yourself!</p>
+                            <button id="start-snake-btn" class="btn btn-primary">Start Coding</button>
+                        </div>
+                    </div>
+                    <div class="game-stats">
+                        <div class="score">Skills Learnt: <span id="snake-score">0</span></div>
+                        <div class="high-score">Best Career: <span id="snake-high-score">0</span></div>
+                    </div>
+                </div>
+                <canvas id="snake-canvas"></canvas>
+                <div class="game-hint">Use Arrow Keys or Swipe to Move</div>
+            </div>
+        </div>
+    </section>
+
     <!-- Work Experience Section -->
     <section id="experience" class="section">
         <div class="container">
@@ -229,6 +283,39 @@
         </div>
     </section>
 
+    <!-- Whack-a-Bug Mini Game Section -->
+    <section id="whack-section" class="section">
+        <div class="container">
+            <h2 class="section-title">Whack-a-Bug <span class="game-subtitle">(Fix Production Bugs Fast!)</span></h2>
+            <div class="game-container glass-panel">
+                <div id="whack-ui">
+                    <div id="whack-overlay" class="game-overlay">
+                        <div class="overlay-content">
+                            <h3 id="whack-title">Production Crisis!</h3>
+                            <p id="whack-text">Bugs are appearing on the servers! Click them to fix them before time runs out.</p>
+                            <button id="start-whack-btn" class="btn btn-primary">Start Debugging</button>
+                        </div>
+                    </div>
+                    <div class="game-stats">
+                        <div class="score">Bugs Fixed: <span id="whack-score">0</span></div>
+                        <div class="timer">Time Left: <span id="whack-timer">30</span>s</div>
+                    </div>
+                </div>
+                <div class="whack-grid">
+                    <div class="whack-hole" data-id="0"><div class="bug">BUG</div></div>
+                    <div class="whack-hole" data-id="1"><div class="bug">BUG</div></div>
+                    <div class="whack-hole" data-id="2"><div class="bug">BUG</div></div>
+                    <div class="whack-hole" data-id="3"><div class="bug">BUG</div></div>
+                    <div class="whack-hole" data-id="4"><div class="bug">BUG</div></div>
+                    <div class="whack-hole" data-id="5"><div class="bug">BUG</div></div>
+                    <div class="whack-hole" data-id="6"><div class="bug">BUG</div></div>
+                    <div class="whack-hole" data-id="7"><div class="bug">BUG</div></div>
+                    <div class="whack-hole" data-id="8"><div class="bug">BUG</div></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
     <!-- Education Section -->
     <section id="education" class="section">
         <div class="container">
@@ -247,6 +334,30 @@
                     <h4>BBD University, Lucknow</h4>
                 </div>
 
+            </div>
+        </div>
+    </section>
+
+    <!-- Mini Game Section -->
+    <section id="game-section" class="section">
+        <div class="container">
+            <h2 class="section-title">Bug Runner <span class="game-subtitle">(Jump over Errors!)</span></h2>
+            <div class="game-container glass-panel">
+                <div id="game-ui">
+                    <div id="game-overlay" class="game-overlay">
+                        <div class="overlay-content">
+                            <h3 id="overlay-title">Ready to Debug?</h3>
+                            <p id="overlay-text">Avoid "BUG" and "ERROR" to keep the code running!</p>
+                            <button id="start-game-btn" class="btn btn-primary">Start Game</button>
+                        </div>
+                    </div>
+                    <div class="game-stats">
+                        <div class="score">Score: <span id="current-score">0</span></div>
+                        <div class="high-score">High Score: <span id="high-score">0</span></div>
+                    </div>
+                </div>
+                <canvas id="game-canvas"></canvas>
+                <div class="game-hint">Tap or Press Space to Jump</div>
             </div>
         </div>
     </section>
@@ -288,18 +399,16 @@
                     </div>
 
                     <div class="social-links">
-                        <a href="https://www.linkedin.com/in/swaraj-gupta-b64072a1/" target="_blank" rel="noopener noreferrer" class="social-icon"><i class="fab fa-linkedin-in"></i></a>
-                        <a href="mailto:Swarajgupta.7872@gmail.com" class="social-icon"><i class="fas fa-envelope"></i></a>
-                        <a href="#" class="social-icon"><i class="fab fa-github"></i></a>
+                        <a href="https://www.linkedin.com/in/swaraj-gupta-b64072a1/" target="_blank" rel="noopener noreferrer" class="social-icon" aria-label="LinkedIn Profile"><i class="fab fa-linkedin-in"></i></a>
+                        <a href="mailto:Swarajgupta.7872@gmail.com" class="social-icon" aria-label="Email Me"><i class="fas fa-envelope"></i></a>
+                        <a href="https://github.com/SwarajKG" class="social-icon" aria-label="GitHub Profile"><i class="fab fa-github"></i></a>
                     </div>
                 </div>
 
                 <div class="contact-form glass-panel">
                     <h3>Send a Message</h3>
                     <div class="google-form-container">
-                        <iframe src="https://docs.google.com/forms/d/e/1FAIpQLSefBfJAeCpqiYBQvxqtcWf4rMNviSaHVfDcsRrjm3GIDTVNiQ/viewform?usp=publish-editor?embedded=true" width="100%" height="700" frameborder="0" marginheight="0" marginwidth="0">Loading…</iframe>
-                        <!-- Note: Since the provided link is a shortened link, I've used a placeholder embed URL above. 
-                             Please replace the 'src' value with your full Google Form embed link for best results. -->
+                        <iframe src="https://forms.gle/vMiVzwDQ1HMXen6Q8" width="100%" height="700" frameborder="0" marginheight="0" marginwidth="0">Loading…</iframe>
                     </div>
                 </div>
 
