@@ -277,43 +277,165 @@ document.addEventListener("DOMContentLoaded", () => {
 
         // Developer Image Group (Attached to camera to stay centered)
         const devGroup = new THREE.Group();
-        camera.add(devGroup);
-        devGroup.position.z = -30;
+        // Solar System Group (Attached to camera)
+        const solarSystem = new THREE.Group();
+        camera.add(solarSystem);
+        solarSystem.position.z = -60;
 
-        const textureLoader = new THREE.TextureLoader();
-        textureLoader.setCrossOrigin('anonymous'); // Still good practice, but local paths don't require CORS
-        
-        // Using local path to avoid CORS issues
-        const imageUrl = './programmer.jpg';
-        
-        // Image Plane
-        const imageGeometry = new THREE.PlaneGeometry(20, 20);
-        const imageMaterial = new THREE.MeshBasicMaterial({
-            map: textureLoader.load(imageUrl),
-            transparent: true,
-            opacity: 0.85,
-            blending: THREE.AdditiveBlending // Blends nicely with dark background
+        // --- 1. The Sun ---
+        const sunGroup = new THREE.Group();
+        solarSystem.add(sunGroup);
+
+        const sunGeom = new THREE.IcosahedronGeometry(12, 4);
+        const sunMat = new THREE.MeshBasicMaterial({ color: 0xffcc33 });
+        const sun = new THREE.Mesh(sunGeom, sunMat);
+        sunGroup.add(sun);
+
+        // Sun Glow (Corona)
+        const coronaGeom = new THREE.SphereGeometry(15, 32, 32);
+        const coronaMat = new THREE.MeshBasicMaterial({ 
+            color: 0xffaa00, 
+            transparent: true, 
+            opacity: 0.25, 
+            blending: THREE.AdditiveBlending 
         });
-        const imageMesh = new THREE.Mesh(imageGeometry, imageMaterial);
-        devGroup.add(imageMesh);
+        const corona = new THREE.Mesh(coronaGeom, coronaMat);
+        sunGroup.add(corona);
 
-        // Glow/Aura Plane behind image
-        const glowGeometry = new THREE.PlaneGeometry(22, 22);
-        const glowMaterial = new THREE.MeshBasicMaterial({
-            color: 0x3b82f6,
-            transparent: true,
-            opacity: 0.3,
-            blending: THREE.AdditiveBlending
+        const sunLight = new THREE.PointLight(0xffcc33, 60, 250);
+        sunGroup.add(sunLight);
+
+        // --- 2. Planets & Orbits ---
+        const planetData = [
+            { name: 'Inner', distance: 25, size: 1.2, color: 0x999999, speed: 0.8 },
+            { name: 'Bio', distance: 35, size: 1.8, color: 0x3b82f6, speed: 0.5 },
+            { name: 'GasGiant', distance: 50, size: 3.5, color: 0xffaa33, speed: 0.3, hasRing: true },
+            { name: 'Ice', distance: 68, size: 2.5, color: 0x00d2ff, speed: 0.2 }
+        ];
+
+        const planets = [];
+        planetData.forEach(data => {
+            const orbitGroup = new THREE.Group();
+            solarSystem.add(orbitGroup);
+
+            // Planet mesh
+            const pGeom = new THREE.SphereGeometry(data.size, 32, 32);
+            const pMat = new THREE.MeshStandardMaterial({ 
+                color: data.color, 
+                metalness: 0.6, 
+                roughness: 0.4 
+            });
+            const planet = new THREE.Mesh(pGeom, pMat);
+            planet.position.x = data.distance;
+            orbitGroup.add(planet);
+
+            // Planet Ring (for Gas Giant)
+            if (data.hasRing) {
+                const rGeom = new THREE.RingGeometry(data.size * 1.5, data.size * 2.2, 64);
+                const rMat = new THREE.MeshBasicMaterial({ 
+                    color: data.color, 
+                    transparent: true, 
+                    opacity: 0.3, 
+                    side: THREE.DoubleSide 
+                });
+                const ring = new THREE.Mesh(rGeom, rMat);
+                ring.rotation.x = Math.PI / 2.5;
+                planet.add(ring);
+            }
+
+            // Orbit path line
+            const pathGeom = new THREE.TorusGeometry(data.distance, 0.05, 16, 100);
+            const pathMat = new THREE.MeshBasicMaterial({ 
+                color: 0xffffff, 
+                transparent: true, 
+                opacity: 0.1 
+            });
+            const path = new THREE.Mesh(pathGeom, pathMat);
+            path.rotation.x = Math.PI / 2;
+            solarSystem.add(path);
+
+            planets.push({ mesh: orbitGroup, speed: data.speed });
         });
-        const glowMesh = new THREE.Mesh(glowGeometry, glowMaterial);
-        glowMesh.position.z = -1;
-        devGroup.add(glowMesh);
 
-        const updateDevScale = () => {
-            const scale = window.innerWidth < 768 ? 0.6 : 1.0;
-            devGroup.scale.set(scale, scale, scale);
+        // --- 3. Starfield ---
+        const starsCount = 2000;
+        const starsGeom = new THREE.BufferGeometry();
+        const starsPos = new Float32Array(starsCount * 3);
+
+        for(let i = 0; i < starsCount; i++) {
+            starsPos[i * 3] = (Math.random() - 0.5) * 500;
+            starsPos[i * 3 + 1] = (Math.random() - 0.5) * 500;
+            starsPos[i * 3 + 2] = (Math.random() - 0.5) * 500;
+        }
+
+        starsGeom.setAttribute('position', new THREE.BufferAttribute(starsPos, 3));
+        const starsMat = new THREE.PointsMaterial({ 
+            color: 0xffffff, 
+            size: 0.5, 
+            transparent: true, 
+            opacity: 0.8 
+        });
+        const starfield = new THREE.Points(starsGeom, starsMat);
+        scene.add(starfield);
+
+        // --- 4. Meteors ---
+        const meteors = [];
+        const meteorGroup = new THREE.Group();
+        scene.add(meteorGroup);
+
+        function createMeteor() {
+            const group = new THREE.Group();
+            
+            // Meteor Head
+            const mGeom = new THREE.SphereGeometry(0.3, 8, 8);
+            const mMat = new THREE.MeshBasicMaterial({ color: 0xffffff });
+            const head = new THREE.Mesh(mGeom, mMat);
+            group.add(head);
+
+            // Meteor Tail
+            const tGeom = new THREE.CylinderGeometry(0, 0.3, 5, 8);
+            const tMat = new THREE.MeshBasicMaterial({ 
+                color: 0xffffff, 
+                transparent: true, 
+                opacity: 0.4, 
+                blending: THREE.AdditiveBlending 
+            });
+            const tail = new THREE.Mesh(tGeom, tMat);
+            tail.position.y = -2.5;
+            group.add(tail);
+
+            // Random initial position and velocity
+            resetMeteor(group);
+            
+            meteorGroup.add(group);
+            meteors.push(group);
+        }
+
+        function resetMeteor(m) {
+            m.position.set(
+                (Math.random() - 0.5) * 300,
+                (Math.random() - 0.5) * 300,
+                -200 - Math.random() * 100
+            );
+            
+            const velocity = new THREE.Vector3(
+                (Math.random() - 0.5) * 2,
+                (Math.random() - 0.5) * 2,
+                2 + Math.random() * 3
+            );
+            m.userData.velocity = velocity;
+
+            // Orient tail to velocity
+            m.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), velocity.clone().normalize());
+        }
+
+        for(let i = 0; i < 8; i++) createMeteor();
+
+        const updateSolarScale = () => {
+            const scale = window.innerWidth < 768 ? 0.25 : 0.5;
+            solarSystem.scale.set(scale, scale, scale);
         };
-        updateDevScale();
+        updateSolarScale();
 
         // Renderer setup
         const renderer = new THREE.WebGLRenderer({ canvas: canvas, alpha: true, antialias: true });
@@ -432,15 +554,35 @@ document.addEventListener("DOMContentLoaded", () => {
             scene.rotation.y = targetX * 0.01 + scrollPercent * 2;
             scene.rotation.x = targetY * 0.01;
 
-            // Interactive animation for Developer Image
+            // Interactive animation for Solar System
             const time = Date.now() * 0.001;
-            if (typeof devGroup !== 'undefined') {
-                devGroup.position.y = Math.sin(time * 1.5) * 0.5;
-                devGroup.position.x = Math.cos(time * 1.2) * 0.3;
-                // Parallax effect counter to mouse movement
-                devGroup.rotation.y = targetX * 0.05;
-                devGroup.rotation.x = targetY * 0.05;
-                devGroup.rotation.z = Math.sin(time * 0.5) * 0.05;
+            if (typeof solarSystem !== 'undefined') {
+                // Orbiting planets
+                planets.forEach(p => {
+                    p.mesh.rotation.y = time * p.speed;
+                });
+
+                // Sun rotation & pulse
+                if (typeof sunGroup !== 'undefined') {
+                    sunGroup.rotation.y = time * 0.1;
+                    const sunPulse = 1 + Math.sin(time * 2) * 0.05;
+                    sunGroup.scale.set(sunPulse, sunPulse, sunPulse);
+                }
+
+                // Update Meteors
+                if (typeof meteors !== 'undefined') {
+                    meteors.forEach(m => {
+                        m.position.add(m.userData.velocity);
+                        // Recycle meteor if it goes too far
+                        if (m.position.z > 100 || Math.abs(m.position.x) > 200 || Math.abs(m.position.y) > 200) {
+                            resetMeteor(m);
+                        }
+                    });
+                }
+
+                // Interactive Tilt
+                solarSystem.rotation.x = targetY * 0.05;
+                solarSystem.rotation.z = targetX * 0.05;
             }
 
             renderer.render(scene, camera);
@@ -453,7 +595,7 @@ document.addEventListener("DOMContentLoaded", () => {
             camera.aspect = window.innerWidth / window.innerHeight;
             camera.updateProjectionMatrix();
             renderer.setSize(window.innerWidth, window.innerHeight);
-            if (typeof updateDevScale === 'function') updateDevScale();
+            if (typeof updateSolarScale === 'function') updateSolarScale();
         });
         }
 
