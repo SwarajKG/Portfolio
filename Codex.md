@@ -4,18 +4,20 @@ This document provides a detailed technical breakdown of the implementation logi
 
 ## 🏛️ Architectural Design
 The project utilizes a **Flat File Architecture** to minimize deployment complexity and ensure high-speed asset resolution. All core logic is consolidated into three primary files:
-- `index.html`: Semantic structure and CDN management.
+- `index.html`: Semantic structure and CDN management (utilizing Three.js r160).
 - `styles.css`: Theming, Glassmorphism UI, game layouts, and responsive design.
 - `script.js`: 3D rendering, animation orchestration, DOM interactions, and four distinct game engines.
 
 ---
 
-## 🌌 Interactive Neural Network Background (Three.js)
-Replacing a simple particle system, the background now features a "Neural Network" node-and-link system.
-- **Node Geometry**: `THREE.BufferGeometry` with `THREE.Points` is used for high-performance rendering of nodes.
-- **Dynamic Links**: `THREE.LineSegments` are used to draw connections between nodes that fall within a 15-unit radius. This distance check is calculated in every frame, creating a dynamic, flowing mesh.
-- **Physics & Motion**: Nodes have constant velocities but bounce off invisible boundaries (-60 to 60) to stay within the scene's view.
-- **Parallax Logic**: Mouse coordinates are mapped to the scene's rotation. Additionally, a `scrollPercent` variable links the page's vertical position to the scene's rotation, creating a deep 3D sense of movement during navigation.
+## 🌌 Interactive 3D Solar System Background (Three.js)
+The background features a custom-built Solar System that serves as the visual anchor of the portfolio.
+- **Central Sun**: A high-detail `IcosahedronGeometry` core with a larger, pulsing `SphereGeometry` corona. It includes a strong `PointLight` to provide dynamic illumination to the rest of the system.
+- **Planetary Orbits**: A hierarchical `THREE.Group` system allows planets to rotate independently around the Sun at variable speeds. 
+- **Planet Geometries**: Planets use `SphereGeometry` with `MeshStandardMaterial` (varying metalness and roughness) to create distinct visual identities (Inner, Bio, Gas Giant with rings, and Ice).
+- **Orbital Paths**: Thin, glowing rings drawn using `TorusGeometry` visualize the planetary paths.
+- **Meteor System**: A procedural particle system that launches 8 meteors with `Vector3` velocities. Each meteor is a group containing a glowing head and a `CylinderGeometry` tail oriented towards its velocity vector. Meteors are automatically recycled when they exit the viewport boundaries.
+- **Centering Logic**: The entire `solarSystem` group is parented to the `camera` rather than the `scene`. This technical choice ensures the solar system remains perfectly centered in the viewport even as the underlying scene rotates during page scrolling.
 
 ---
 
@@ -44,4 +46,4 @@ The animation system is built for **reliability** and **guaranteed visibility**.
 - **Favicon & PDF Branding**: The site includes a custom `fav.ico` and a direct-download `resume.pdf` link, ensuring a professional, fully-branded experience.
 
 ---
-**Maintenance Note**: All project logic is modular within `script.js`. New games or features should follow the `DOMContentLoaded` wrapper pattern and use existing CSS variables for theme consistency.
+**Maintenance Note**: All project logic is modular within `script.js`. New solar system bodies or game features should follow the existing `Group` hierarchy pattern and utilize the established `try-catch` safety wrappers.

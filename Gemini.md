@@ -10,12 +10,12 @@ This file defines the foundational mandates for AI-assisted development of the S
 - **Theme**: Dark modern developer theme (`#0f172a` base).
 - **UI Elements**: Glassmorphism and Neumorphism only.
 - **Responsiveness**: Mobile-first approach is mandatory. All sections must be fully responsive.
-- **Visuals**: Use CSS gradients, Three.js particles, and GSAP for all animations.
+- **Visuals**: Use CSS gradients, Three.js Solar System background, and GSAP for all animations.
 
 ## 🛠️ Technical Stack
 - **Core**: Semantic HTML5, CSS3, Vanilla JavaScript (ES6+).
 - **Libraries (CDN Only)**: 
-  - Three.js (for 3D backgrounds)
+  - Three.js (r160+) (for 3D backgrounds)
   - GSAP & ScrollTrigger (for scroll animations)
   - Vanilla Tilt (for 3D card effects)
   - FontAwesome (for icons)
@@ -25,6 +25,7 @@ This file defines the foundational mandates for AI-assisted development of the S
 ## ✍️ Coding Standards
 - **CSS**: Use CSS Variables for all theme colors, spacing, and transitions.
 - **JS**: Modular event listeners. Do not use inline `onclick` attributes.
+- **3D Centering**: Always parent primary 3D subjects (like the Solar System) to the `camera` to ensure they remain centered during page rotation and scrolling.
 - **Animations**:
   - Always use GSAP `fromTo` for scroll reveals to guarantee end-state visibility.
   - Prefer `autoAlpha` over `opacity` for better visibility/performance.
@@ -37,7 +38,7 @@ This file defines the foundational mandates for AI-assisted development of the S
 
 ## 🚀 Performance & SEO
 - **Images**: Use lazy loading (`loading="lazy"`) for all image assets.
-- **Optimization**: Keep Three.js particle counts optimized for mobile.
+- **Optimization**: Keep Three.js particle and star counts optimized for mobile.
 - **SEO**: Maintain semantic structure (`header`, `main`, `section`, `footer`) and proper ARIA labels.
 
 ---
