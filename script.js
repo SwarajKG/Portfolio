@@ -273,6 +273,47 @@ document.addEventListener("DOMContentLoaded", () => {
         // Camera setup
         const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
         camera.position.z = 50;
+        scene.add(camera);
+
+        // Developer Image Group (Attached to camera to stay centered)
+        const devGroup = new THREE.Group();
+        camera.add(devGroup);
+        devGroup.position.z = -30;
+
+        const textureLoader = new THREE.TextureLoader();
+        textureLoader.setCrossOrigin('anonymous'); // Still good practice, but local paths don't require CORS
+        
+        // Using local path to avoid CORS issues
+        const imageUrl = './programmer.jpg';
+        
+        // Image Plane
+        const imageGeometry = new THREE.PlaneGeometry(20, 20);
+        const imageMaterial = new THREE.MeshBasicMaterial({
+            map: textureLoader.load(imageUrl),
+            transparent: true,
+            opacity: 0.85,
+            blending: THREE.AdditiveBlending // Blends nicely with dark background
+        });
+        const imageMesh = new THREE.Mesh(imageGeometry, imageMaterial);
+        devGroup.add(imageMesh);
+
+        // Glow/Aura Plane behind image
+        const glowGeometry = new THREE.PlaneGeometry(22, 22);
+        const glowMaterial = new THREE.MeshBasicMaterial({
+            color: 0x3b82f6,
+            transparent: true,
+            opacity: 0.3,
+            blending: THREE.AdditiveBlending
+        });
+        const glowMesh = new THREE.Mesh(glowGeometry, glowMaterial);
+        glowMesh.position.z = -1;
+        devGroup.add(glowMesh);
+
+        const updateDevScale = () => {
+            const scale = window.innerWidth < 768 ? 0.6 : 1.0;
+            devGroup.scale.set(scale, scale, scale);
+        };
+        updateDevScale();
 
         // Renderer setup
         const renderer = new THREE.WebGLRenderer({ canvas: canvas, alpha: true, antialias: true });
@@ -391,6 +432,17 @@ document.addEventListener("DOMContentLoaded", () => {
             scene.rotation.y = targetX * 0.01 + scrollPercent * 2;
             scene.rotation.x = targetY * 0.01;
 
+            // Interactive animation for Developer Image
+            const time = Date.now() * 0.001;
+            if (typeof devGroup !== 'undefined') {
+                devGroup.position.y = Math.sin(time * 1.5) * 0.5;
+                devGroup.position.x = Math.cos(time * 1.2) * 0.3;
+                // Parallax effect counter to mouse movement
+                devGroup.rotation.y = targetX * 0.05;
+                devGroup.rotation.x = targetY * 0.05;
+                devGroup.rotation.z = Math.sin(time * 0.5) * 0.05;
+            }
+
             renderer.render(scene, camera);
         };
 
@@ -401,6 +453,7 @@ document.addEventListener("DOMContentLoaded", () => {
             camera.aspect = window.innerWidth / window.innerHeight;
             camera.updateProjectionMatrix();
             renderer.setSize(window.innerWidth, window.innerHeight);
+            if (typeof updateDevScale === 'function') updateDevScale();
         });
         }
 
