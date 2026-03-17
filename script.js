@@ -1288,7 +1288,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
             startBtn.addEventListener('click', startGame);
         }
-        });
 
         /* ==========================================================================
            Contact Form Submission to Google Forms
@@ -1320,3 +1319,24 @@ document.addEventListener("DOMContentLoaded", () => {
                 }
             });
         }
+
+        /* ==========================================================================
+           Skill Test Button - Random Navigation
+           ========================================================================== */
+        const skillTestBtn = document.getElementById('skill-test-btn');
+        if (skillTestBtn) {
+            skillTestBtn.addEventListener('click', () => {
+                const gameSections = [
+                    'invaders-section',
+                    'snake-section',
+                    'whack-section',
+                    'game-section'
+                ];
+                const randomId = gameSections[Math.floor(Math.random() * gameSections.length)];
+                const target = document.getElementById(randomId);
+                if (target) {
+                    target.scrollIntoView({ behavior: 'smooth' });
+                }
+            });
+        }
+    });
